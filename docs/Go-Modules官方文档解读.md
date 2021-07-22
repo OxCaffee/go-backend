@@ -1,6 +1,32 @@
 # Go Modules官方文档解读
 
-## 介绍
+<!-- vscode-markdown-toc -->
+* 1. [介绍](#)
+* 2. [模块，包和版本](#-1)
+* 3. [模块路径](#-1)
+* 4. [版本](#-1)
+* 5. [伪版本](#-1)
+* 6. [将包解析为模块](#-1)
+* 7. [`go.mod`文件](#go.mod)
+* 8. [编译命令](#-1)
+	* 8.1. [go build](#gobuild)
+	* 8.2. [go install](#goinstall)
+	* 8.3. [go list -m](#golist-m)
+	* 8.4. [go mod download](#gomoddownload)
+	* 8.5. [go mod edit](#gomodedit)
+	* 8.6. [go mod graph](#gomodgraph)
+	* 8.7. [go mod init](#gomodinit)
+	* 8.8. [go mod tidy](#gomodtidy)
+	* 8.9. [go mod verify](#gomodverify)
+	* 8.10. [go clean -modcache](#goclean-modcache)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+##  1. <a name=''></a>介绍
 
 模块(Modules)是Go语言管理依赖的方式。
 
@@ -9,7 +35,7 @@
 * 如果你想了解如何创建一个Go项目(Project)，请移步[如何写Go代码]()
 * 如果你想使用Go模块以及重构系统为Go模块，请关注一系列以[使用Go模块]()为开头的博客
 
-## 模块，包和版本
+##  2. <a name='-1'></a>模块，包和版本
 
 **一个模块是_发布_,_版本控制_和_分发_的包的集合** 。模块可能从版本控制仓库和其他代理服务器中直接下载。
 
@@ -17,7 +43,7 @@
 
 一个模块中的每一个包`package`都是一批源文件的集合，它们位于同一个文件夹中，被一起编译。一个包的路径是相较于包含它的包的路径的相对路径。
 
-## 模块路径
+##  3. <a name='-1'></a>模块路径
 
 模块路径应该描述模块做什么以及在哪里找到它。通常，模块路径由存储库根路径、存储库中的目录(通常为空)和主版本后缀(仅适用于主版本2或更高版本)组成。
 
@@ -31,7 +57,7 @@
 
 在模块路径中允许的字符也有一些[词法限制](https://golang.org/ref/mod#go-mod-file-ident)。
 
-## 版本
+##  4. <a name='-1'></a>版本
 
 版本标识模块的不可变快照，可以是发布版或预发布版。每个版本都以字母v开头，后面是语义版本。
 
@@ -48,7 +74,7 @@
 
 Go可以使用不遵循这些约定的标记、分支或修订来访问版本控制系统中的模块。然而，在主模块中，go命令将自动将不遵循此标准的修订名转换为规范版本。作为此过程的一部分，go命令还将删除构建元数据后缀(+不兼容的除外)。这可能会产生一个伪版本、一个预发布版本，它编码修订标识符(例如Git提交散列)和一个来自版本控制系统的时间戳。例如，命令`go get -d golang.org/x/net@daa7c041`将提交哈希`daa7c041`转换为伪版本`v0.0.0-20191109021931-daa7c04131f5`。在主模块之外需要规范版本，如果在go中出现master等非规范版本，则go命令将在`go.mod`中报告一个错误。
 
-## 伪版本
+##  5. <a name='-1'></a>伪版本
 
 伪版本是一种特殊格式化的预发布版本，它对版本控制存储库中关于特定修订的信息进行编码。例如`v0.0.0-20191109021931-daa7c04131f5`是伪版本。
 
@@ -68,7 +94,7 @@ Go可以使用不遵循这些约定的标记、分支或修订来访问版本控
 
 * `vX.Y。(Z + 1) 0`。``yyyymmddhhmmss-abcdefabcdef`在基本版本是发布版本(如`vX.Y.Z`)时使用。例如，如果基本版本是`v1.2.3`，那么伪版本可能是`v1.2.4-0.20191109021931-daa7c04131f5`。
 
-## 将包解析为模块
+##  6. <a name='-1'></a>将包解析为模块
 
 当go命令使用包路径加载包时，它需要确定哪个模块提供了包。
 
@@ -98,7 +124,7 @@ go命令首先在编译列表中搜索带有包路径前缀的模块。例如，
 
 在找到合适的模块之后，go命令会将新模块的路径和版本添加到主模块的`go.mod`中。这确保了将来加载相同包的时候，相同的模块将在相同的版本中使用。如果被解析的包没有被主模块中的包导入，那么新的需求会有一个`//indirect`注释。
 
-## `go.mod`文件
+##  7. <a name='go.mod'></a>`go.mod`文件
 
 一个模块由一个被UTF8编码的目录根路径下的`go.mod`文件定义，例如：
 
@@ -127,9 +153,9 @@ require (
 
 主模块和任何用本地文件路径指定的替换模块都需要`go.mod`文件。然而，**显式地缺少`go.mod`的模块，仍然可能被作为一个依赖项** 。
 
-## 编译命令
+##  8. <a name='-1'></a>编译命令
 
-### go build
+###  8.1. <a name='gobuild'></a>go build
 
 用法：
 
@@ -175,7 +201,7 @@ $ go get -d golang.org/x/text@none
 - 该`-t`标志告诉`go get`要考虑构建命令行上命名的包的测试所需的模块。当`-t`和`-u`一起使用时， `go get`也会更新测试依赖项。
 - `-insecure`不应再使用该标志。它允许`go get`使用不安全的方案（如 HTTP）解析自定义导入路径并从存储库和模块代理中获取。在`GOINSECURE` [环境变量](https://golang.org/ref/mod#environment-variables)提供了更精细的控制，并应被代替使用。
 
-### go install
+###  8.2. <a name='goinstall'></a>go install
 
 用法：
 
@@ -216,7 +242,7 @@ Go 1.15 及更低版本不支持使用`go install`.
 
 如果参数没有版本后缀，则`go install`可能以模块感知模式或`GOPATH`模式运行，具体取决于`GO111MODULE`环境变量和`go.mod`文件的存在。有关详细信息，请参阅[模块感知命令](https://golang.org/ref/mod#mod-commands)。如果启用了模块感知模式，`go install`则在主模块的上下文中运行，这可能与包含正在安装的包的模块不同。
 
-### go list -m
+###  8.3. <a name='golist-m'></a>go list -m
 
 用法：
 
@@ -289,7 +315,7 @@ rsc.io/pdf v0.1.1 [v0.1.2]
 
 模板函数`module`接受一个字符串参数，该参数必须是模块路径或查询，并将指定的模块作为`Module`结构返回。如果发生错误，结果将是一个`Module`带有非 nil`Error` 字段的结构体。
 
-### go mod download
+###  8.4. <a name='gomoddownload'></a>go mod download
 
 用法：
 
@@ -328,7 +354,7 @@ type Module struct {
 
 该`-x`标志导致`download`打印命令`download`执行到标准错误。
 
-### go mod edit
+###  8.5. <a name='gomodedit'></a>go mod edit
 
 用法：
 
@@ -417,7 +443,7 @@ type Retract struct {
 
 工具还可以使用该包 [`golang.org/x/mod/modfile`](https://pkg.go.dev/golang.org/x/mod/modfile?tab=doc) 来解析、编辑和格式化`go.mod`文件。
 
-### go mod graph
+###  8.6. <a name='gomodgraph'></a>go mod graph
 
 用法：
 
@@ -442,7 +468,7 @@ example.com/b@v1.2.0 example.com/c@v1.2.0
 
 该`-go`标志导致`go mod graph`由给定围棋版本加载，而不是版本指示由报告模块图形[`go`指令](https://golang.org/ref/mod#go-mod-file-go)中`go.mod`的文件。
 
-### go mod init
+###  8.7. <a name='gomodinit'></a>go mod init
 
 用法：
 
@@ -475,7 +501,7 @@ go mod init example.com/m
 
 如果同一仓库中的多个包以不同的版本导入，而仓库只包含一个模块，则导入的`go.mod`只能需要一个版本的模块。您可能希望运行[`go list -m all`](https://golang.org/ref/mod#go-list-m)以检查[构建列表](https://golang.org/ref/mod#glos-build-list)中的所有版本，并[`go mod tidy`](https://golang.org/ref/mod#go-mod-tidy)添加缺少的需求并删除未使用的需求。
 
-### go mod tidy
+###  8.8. <a name='gomodtidy'></a>go mod tidy
 
 用法：
 
@@ -499,7 +525,7 @@ go mod tidy [-e] [-v] [-go=version] [-compat=version]
 
 默认情况下，当模块图由指令中指示的版本之前的 Go 版本加载时，`go mod tidy`将检查[所选版本](https://golang.org/ref/mod#glos-selected-version)的模块是否不会更改 `go`。也可以通过`-compat`标志明确指定版本检查的兼容性。
 
-### go mod verify
+###  8.9. <a name='gomodverify'></a>go mod verify
 
 用法：
 
@@ -515,7 +541,7 @@ go mod verify
 
 相比之下，`go mod verify`检查模块`.zip`文件及其提取的目录是否具有与首次下载时模块缓存中记录的哈希匹配的哈希。这对于在下载并验证模块*后*检测模块缓存中文件的更改非常有用。`go mod verify` 不下载不在缓存中的`go.sum`模块的内容，也不使用 文件来验证模块内容。但是，`go mod verify`可能会下载 `go.mod`文件以执行[最小版本选择](https://golang.org/ref/mod#minimal-version-selection)。它将`go.sum`用于验证这些文件，并且可能会`go.sum`为丢失的散列添加条目。
 
-### go clean -modcache
+###  8.10. <a name='goclean-modcache'></a>go clean -modcache
 
 用法：
 

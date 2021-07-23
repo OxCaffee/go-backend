@@ -308,7 +308,7 @@ func main12() {
 }
 
 // 演示父context取消信号后子context也会取消
-func main() {
+func main13() {
 	parentCtx, cancel1 := context.WithCancel(context.Background())
 	// 这里我们不设置defer cancel1()，而是自己手动cancel
 

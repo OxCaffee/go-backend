@@ -4,6 +4,7 @@
 
 * [Go语言并发同步原语和锁机制](docs/Go语言并发同步原语和锁.md)
 * [Go语言上下文Context](/docs/Go语言上下文Context.md)
+* [Go语言通道Channel](/docs/Go语言通道Channel.md)
 
 # go工程化
 

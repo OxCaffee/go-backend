@@ -1,8 +1,8 @@
 <div align=center width=55%><img src="/assets/logo.jpg"/></div>
 
 <!-- vscode-markdown-toc -->
-	* 1. [go并发编程](#go)
-	* 2. [go工程化](#go-1)
+* 1. [go并发编程](#go)
+* 2. [go工程化](#go-1)
 
 <!-- vscode-markdown-toc-config
 	numbering=true

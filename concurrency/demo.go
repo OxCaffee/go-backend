@@ -248,3 +248,94 @@ func main10() {
 		fmt.Println("All resquest are fetched!")
 	}
 }
+
+func main11() {
+	gen := func(ctx context.Context) <-chan int {
+		n := 1
+		dst := make(chan int)
+
+		go func() {
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case dst <- n:
+					n++
+				}
+			}
+		}()
+		return dst
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	// defer cancel()
+
+	go func() {
+		for n := range gen(ctx) {
+			fmt.Println(n)
+			if n == 1000 {
+				break
+			}
+		}
+	}()
+
+	<-time.After(10 * time.Millisecond)
+
+	go func() {
+		fmt.Println("cancel is called")
+		cancel()
+	}()
+}
+
+func main12() {
+	const duration = 10 * time.Millisecond
+	deadline := time.Now().Add(duration)
+
+	ctx, cancel := context.WithDeadline(context.Background(), deadline)
+	defer cancel()
+
+	go func(ctx context.Context) {
+		select {
+		case <-time.After(1 * time.Microsecond):
+			fmt.Println("overslept")
+		case <-ctx.Done():
+			fmt.Println(ctx.Err())
+			return
+		}
+	}(ctx)
+
+	<-time.After(1 * time.Second)
+}
+
+// 演示父context取消信号后子context也会取消
+func main() {
+	parentCtx, cancel1 := context.WithCancel(context.Background())
+	// 这里我们不设置defer cancel1()，而是自己手动cancel
+
+	childCtx, cancel2 := context.WithCancel(parentCtx)
+	defer cancel2()
+
+	go func(pCtx context.Context) {
+		select {
+		case <-pCtx.Done():
+			fmt.Println("parent context", pCtx.Err())
+			return
+		}
+	}(parentCtx)
+
+	<-time.After(1 * time.Second)
+
+	go func(cCtx context.Context) {
+		select {
+		case <-cCtx.Done():
+			fmt.Println("child context", cCtx.Err())
+		}
+	}(childCtx)
+
+	<-time.After(time.Second)
+
+	// 此时父context被取消，接着会打印子context被取消
+	cancel1()
+
+	<-time.After(time.Second)
+}

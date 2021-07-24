@@ -80,7 +80,7 @@ func main04() {
 	fmt.Println("s:", unsafe.Offsetof(T{}.b), "; size:", unsafe.Sizeof(T{}.b))
 }
 
-func main() {
+func main05() {
 	type T struct {
 		a int8
 		b struct{}

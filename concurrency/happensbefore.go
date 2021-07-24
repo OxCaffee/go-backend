@@ -1,11 +1,11 @@
-package main
+package concurrency
 
 import (
 	"fmt"
 	"time"
 )
 
-func main() {
+func main01() {
 	c := make(chan int, 10)
 
 	go func() {

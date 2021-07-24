@@ -18,3 +18,4 @@
 ## go面试题
 
 * [浅谈Go语言中的内存对齐](docs/Go语言内存对齐.md)
+* [channel面试大杂烩](/docs/Go面试Channel.md)

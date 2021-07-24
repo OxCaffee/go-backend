@@ -65,7 +65,7 @@ func mmain03() {
 	}
 }
 
-func main() {
+func mmain04() {
 	c := make(chan int, 10)
 
 	close(c)

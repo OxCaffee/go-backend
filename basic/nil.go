@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-func main() {
+func nilmain() {
 	var a = []int(nil)
 	var b = map[string]int(nil)
 	var c = (*[5]int)(nil)

@@ -22,6 +22,6 @@ func factImpl(impl DerecursiveFact, n int) int {
 	return n * impl(impl, n-1)
 }
 
-func main() {
+func rmain() {
 	fmt.Println(factImpl(factImpl, 10))
 }

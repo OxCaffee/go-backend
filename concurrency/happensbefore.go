@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func main01() {
+func fmain01() {
 	c := make(chan int, 10)
 
 	go func() {

@@ -5,6 +5,7 @@
 * 2. [Go中的哪些类型可以被内嵌](#Go)
 * 3. [类型内嵌允许多次内嵌吗](#-1)
 * 4. [当一个结构体内嵌了另外一个类型，此结构体从内嵌的类型中获得了什么](#-1)
+* 5. [选择器遮挡和碰撞](#-1)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -159,3 +160,124 @@ Person的第 0 个方法为: PrintName
 
 - 类型[`struct{T}`]()和[`*struct{T}`]()均将获取类型[`T`]()的所有方法。
 - 类型[`*struct{T}`]()、[`struct{*T}`]()和[`*struct{*T}`]()都将获取类型[`*T`]()的所有方法。
+
+##  5. <a name='-1'></a>选择器遮挡和碰撞
+
+- 只有深度最浅的一个完整形式的选择器（并且最浅者只有一个）可以被缩写为`x.y`。 换句话说，`x.y`表示深度最浅的一个选择器。其它完整形式的选择器被此最浅者所遮挡（压制）。
+- 如果有多个完整形式的选择器同时拥有最浅深度，则任何完整形式的选择器都不能被缩写为`x.y`。 我们称这些同时拥有最浅深度的完整形式的选择器发生了碰撞。
+
+如果一个方法选择器被另一个方法选择器所遮挡，并且它们对应的方法原型是一致的，那么我们可以说第一个方法被第二个覆盖（overridden）了。
+
+举个例子，假设`A`、`B`和`C`为三个[定义类型](https://gfw.go101.org/article/type-system-overview.html#non-defined-type)：
+
+```go
+type A struct {
+	x string
+}
+func (A) y(int) bool {
+	return false
+}
+
+type B struct {
+	y bool
+}
+func (B) x(string) {}
+
+type C struct {
+	B
+}
+```
+
+下面这段代码编译不通过，原因是选择器`v1.A.x`和`v1.B.x`的深度一样，所以它们发生了碰撞，结果导致它们都不能被缩写为`v1.x`。 同样的情况发生在选择器`v1.A.y`和`v1.B.y`身上。
+
+```go
+var v1 struct {
+	A
+	B
+}
+
+func f1() {
+	_ = v1.x // error: 模棱两可的v1.x
+	_ = v1.y // error: 模棱两可的v1.y
+}
+```
+
+下面的代码编译没问题。选择器`v2.C.B.x`被另一个选择器`v2.A.x`遮挡了，所以`v2.x`实际上是选择器`v2.A.x`的缩写形式。 因为同样的原因，`v2.y`是选择器`v2.A.y`（而不是选择器`v2.C.B.y`）的缩写形式。
+
+```go
+var v2 struct {
+	A
+	C
+}
+
+func f2() {
+	fmt.Printf("%T \n", v2.x) // string
+	fmt.Printf("%T \n", v2.y) // func(int) bool
+}
+```
+
+一个被遮挡或者碰撞的选择器并不妨碍更深层的选择器被提升，如下例所示中的`.M`和`.z`：
+
+```go
+package main
+
+type x string
+func (x) M() {}
+
+type y struct {
+	z byte		// y.z
+}
+
+type A struct {
+	x			//A.x ==> v.A.x
+}
+func (A) y(int) bool {	//A.y ==> v.A.y
+	return false	
+}
+
+type B struct {	//B.y	==> v.B.y
+	y
+}
+func (B) x(string) {}	//B.x ==> v.B.x
+
+func main() {
+	var v struct {
+		A	//v.A
+		B	//v.B
+	}
+    
+    // 共存在如下选择器
+    // v.A.x
+    // v.A.y
+    // v.B.x
+    // v.B.y
+    // v.A.y.z
+    // v.B.y.z
+    
+	//_ = v.x // error: 模棱两可的v.x
+	//_ = v.y // error: 模棱两可的v.y
+	_ = v.M // ok. <=> v.A.x.M
+	_ = v.z // ok. <=> v.B.y.z
+}
+```
+
+来自不同库包的两个非导出方法（或者字段）将总是被认为是两个不同的标识符，即使它们的名字完全一致。 因此，当它们的属主类型被同时内嵌在同一个结构体类型中的时候，它们绝对不会相互碰撞或者遮挡。 举个例子，下面这个含有两个库包的Go程序编译和运行都没问题。 但是，如果将其中所有出现的`m()`改为`M()`，则此程序将编译不过。 原因是`A.M`和`B.M`碰撞了，导致`c.M`为一个非法的选择器。
+
+```go
+type A struct {
+	n int
+}
+
+func (a A) m() {
+	fmt.Println("A", a.n)
+}
+
+type I interface {
+	m()
+}
+
+func Bar(i I) {
+	i.m()
+}
+```
+

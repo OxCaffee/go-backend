@@ -22,7 +22,7 @@ type Singer struct {
 	works  []string
 }
 
-func main() {
+func imain() {
 	// var singer = Singer{Person: Person{"wwh", 123}}
 
 	t := reflect.TypeOf(Singer{})

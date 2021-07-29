@@ -6,6 +6,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var Db *sql.DB
@@ -13,7 +15,7 @@ var Db *sql.DB
 // 初始化数据库
 func init() {
 	var err error
-	Db, err = sql.Open("postgres", "dbname=chitchat sslmod=disable")
+	Db, err = sql.Open("mysql", "root:CHINA19980223`@tcp(sh-cynosdbmysql-grp-0sv81ira.sql.tencentcdb.com:23156)/chitchat")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -30,7 +30,7 @@ func main() {
 
 	// 创建server
 	server := &http.Server{
-		Addr:           "0.0.0.0:8080",
+		Addr:           "localhost:8080",
 		Handler:        mux,
 		ReadTimeout:    time.Duration(config.ReadTimeout * int64(time.Second)),
 		WriteTimeout:   time.Duration(config.WriteTimeout * int64(time.Second)),

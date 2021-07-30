@@ -1,4 +1,4 @@
-<div align=center width=78%><img src="/assets/logo.jpg"/></div>
+<div align=center width=60%><img src="/assets/go.png"/></div>
 
 ------
 

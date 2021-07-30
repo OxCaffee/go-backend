@@ -29,3 +29,10 @@
 * [内存对齐](docs/Go语言内存对齐.md)
 * [通道chan](/docs/Go面试Channel.md)
 * [结构体struct](/docs/Go面试结构体.md)
+
+## Go重要包汇总
+
+* **net/http**
+  * [net/http包源码解读——Request请求](/docs/http包之Request.md)
+  * [net/http包源码解读——Response响应]()
+  

@@ -1,12 +1,13 @@
-<div align=center width=100%><img src="/assets/logo.jpg"/></div>
+<div align=center width=78%><img src="/assets/logo.jpg"/></div>
 
 ------
 
 ## Go基础
 
 * [Go语言中的nil](/docs/Go语言中的nil.md)
-* [类型内嵌(你真的懂吗)](/docs/Go语言中的类型内嵌.md)
+* [类型内嵌](/docs/Go语言中的类型内嵌.md)
 * [slice切片源码](docs/slice源码解读.md)
+* [unsafe.Pointer非类型安全指针使用情景](/docs/unsafe.Pointer非安全类型指针.md)
 
 ## Go内存管理
 

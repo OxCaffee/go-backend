@@ -25,7 +25,7 @@ func cat() {
 	fmt.Println(s2)
 }
 
-func main() {
+func slmain() {
 	// makeSlice()
 	// appendSlice()
 	cat()

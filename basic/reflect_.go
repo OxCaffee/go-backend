@@ -5,7 +5,7 @@ import (
 	"reflect"
 )
 
-func main() {
+func rrmain() {
 	ro := reflect.TypeOf(1)
 	io := reflect.ValueOf(ro)
 

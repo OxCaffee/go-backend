@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func main() {
+func xxxxmain() {
 	p("ChitChat", version(), "started at", config.Address)
 
 	// 创建读写锁

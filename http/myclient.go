@@ -35,7 +35,7 @@ func handleResponse(resp *http.Response) {
 	fmt.Println("响应信息: ", bytes)
 }
 
-func main() {
+func mmmmmain() {
 
 	url := "http://localhost:8080/handler1"
 

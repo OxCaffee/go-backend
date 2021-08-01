@@ -1,6 +1,9 @@
 package main
 
-import "errors"
+import (
+	"errors"
+	"math"
+)
 
 type Args struct {
 	A, B int
@@ -25,5 +28,12 @@ func (t *Arith) Divide(args *Args, reply *Quotient) error {
 	reply.Quo = args.A / args.B
 	reply.Rem = args.A % args.B
 
+	return nil
+}
+
+type MathUtil struct {}
+
+func (mu *MathUtil) CalculateCircleArea(req float32, resp *float32) error {
+	*resp = math.Pi * req * req
 	return nil
 }

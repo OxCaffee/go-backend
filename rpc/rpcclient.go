@@ -6,7 +6,7 @@ import (
 	"net/rpc"
 )
 
-func SyncClient() {
+func SyncClient01() {
 	client, err := rpc.DialHTTP("tcp", ":8080")
 	if err != nil {
 		log.Fatal("dial rpc server failed")
@@ -23,7 +23,7 @@ func SyncClient() {
 	fmt.Printf("Arith: %d * %d = %d", args.A, args.B, reply)
 }
 
-func AsyncClient() {
+func AsyncClient01() {
 	client, _ := rpc.DialHTTP("tcp", ":8080")
 	args := &Args{7, 8}
 	quotient := &Quotient{}
@@ -31,4 +31,41 @@ func AsyncClient() {
 	replayCall := <-asyncCall.Done
 
 	fmt.Println(replayCall.Reply)
+}
+
+func SyncClient02() {
+	// 客户端
+	client, err := rpc.DialHTTP("tcp", ":8080")
+	if err != nil {
+		panic(err)
+	}
+
+	// 参数和数据
+	var req float32 = 1.1
+	// 计算结果
+	var reply float32
+
+	err = client.Call("MathUtil.CalculateCircleArea", req, &reply)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(reply)
+}
+
+func AsyncClient02() {
+	// 客户端
+	client, err := rpc.DialHTTP("tcp", ":8080")
+	if err != nil {
+		panic(err)
+	}
+
+	// 请求和结果
+	var req float32 = 12.12
+	var resp = new(float32)
+
+	call := client.Go("MathUtil.CalculateCircleArea", req, resp, nil)
+	done := <-call.Done
+	fmt.Println(done)
+	fmt.Println(*resp)
 }

@@ -3,10 +3,9 @@ package main
 import "time"
 
 func main() {
-	go Server()
+	go AServer()
 
-	<-time.After(5 * time.Second)
+	<-time.After(3*time.Second)
 
-	//Client()
-	AsyncClient()
+	AClient()
 }

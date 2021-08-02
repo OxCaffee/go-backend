@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"grpc/module"
+	"time"
+)
 
 func main() {
 	go Server()
@@ -8,4 +11,6 @@ func main() {
 	<-time.After(500 * time.Millisecond)
 
 	Client()
+
+	_ = module.M1{}
 }

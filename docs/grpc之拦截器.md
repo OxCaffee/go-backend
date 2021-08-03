@@ -10,7 +10,9 @@
 * 3. [如何自定义Server端的一元Interceptor](#ServerInterceptor)
 * 4. [如何注册一元Interceptor到Server端](#InterceptorServer)
 * 5. [拦截器链的构建](#-1)
-	* 5.1. [UnaryServerInterceptor拦截链的构建](#UnaryServerInterceptor-1)
+	* 5.1. [闭包构建](#-1)
+	* 5.2. [递归构建](#-1)
+	* 5.3. [grpc官方给出的构建方式](#grpc)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -117,7 +119,7 @@ func UnaryInterceptor(i UnaryServerInterceptor) ServerOption {
 
 ##  5. <a name='-1'></a>拦截器链的构建
 
-###  5.1. <a name='UnaryServerInterceptor-1'></a>UnaryServerInterceptor拦截链的构建
+###  5.1. <a name='-1'></a>闭包构建
 
 构建拦截器链，其中一种方式就是利用闭包调用：[`f = inter(ctx, f1); f1 = inter(ctx, f2); ....`]() ，在代码层面，就表现为拦截器的闭包：
 
@@ -159,7 +161,9 @@ func ChainUnaryServer(interceptors ...grpc.UnaryServerInterceptor) grpc.UnarySer
 }
 ```
 
-事实上我们还有一种更加容易理解的构建方式：
+###  5.2. <a name='-1'></a>递归构建
+
+事实上我们还有一种更加容易理解的构建方式，即更容易理解的递归调用方式：
 
 ```go
 func InterceptChain(interceptors ...grpc.UnaryServerInterceptor) grpc.UnaryServerInterceptor {
@@ -184,6 +188,27 @@ func InterceptChain(interceptors ...grpc.UnaryServerInterceptor) grpc.UnaryServe
 			chainHandler = chain(interceptors[i], chainHandler)
 		}
 		return chainHandler(ctx, req)
+	}
+}
+```
+
+###  5.3. <a name='grpc'></a>grpc官方给出的构建方式
+
+[`grpc`]()官方源码给出了如下的构建方式，与上面第一种构建方式大同小异：
+
+```go
+func chainUnaryInterceptors(interceptors []UnaryServerInterceptor) UnaryServerInterceptor {
+	return func(ctx context.Context, req interface{}, info *UnaryServerInfo, handler UnaryHandler) (interface{}, error) {
+		var i int
+		var next UnaryHandler
+		next = func(ctx context.Context, req interface{}) (interface{}, error) {
+			if i == len(interceptors)-1 {
+				return interceptors[i](ctx, req, info, handler)
+			}
+			i++
+			return interceptors[i-1](ctx, req, info, next)
+		}
+		return next(ctx, req)
 	}
 }
 ```

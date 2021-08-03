@@ -45,7 +45,8 @@
 
 ##  5. <a name='GoRPC'></a>Go RPC
 
-* [grpc拦截器Interceptor](/docs/grpc之拦截器.md)
+* [grpc之Interceptor拦截器](/docs/grpc之拦截器.md)
+* [grpc之Server启动流程](/docs/grpc之Server启动.md)
 
 ##  6. <a name='Go-1'></a>Go工程化
 

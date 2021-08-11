@@ -1,0 +1,62 @@
+{
+ "id": "dbf80f5b-f6b6-4760-817b-c8840237f61a",
+ "brand": "Apple",
+ "name": "Macbook Pro",
+ "cpu": {
+  "brand": "Intel",
+  "name": "Core i3-1005G1",
+  "number_cores": 6,
+  "number_threads": 6,
+  "min_ghz": 2.1029919269175648,
+  "max_ghz": 4.264260408376624
+ },
+ "ram": {
+  "value": "6",
+  "uint": "GIGABYTE"
+ },
+ "gpus": [
+  {
+   "brand": "AMD",
+   "name": "RTX Vega-56",
+   "min_ghz": 1.3642560522821956,
+   "max_ghz": 1.4831557512864502,
+   "memory": {
+    "value": "6",
+    "uint": "GIGABYTE"
+   }
+  }
+ ],
+ "storages": [
+  {
+   "driver": "SSD",
+   "memory": {
+    "value": "772",
+    "uint": "GIGABYTE"
+   }
+  },
+  {
+   "driver": "HDD",
+   "memory": {
+    "value": "4",
+    "uint": "TERABYTE"
+   }
+  }
+ ],
+ "screen": {
+  "size_inch": 16.25654,
+  "resolution": {
+   "width": 2892,
+   "height": 1627
+  },
+  "panel": "OLED",
+  "multitouch": false
+ },
+ "keyboard": {
+  "layout": "QWERTZ",
+  "backlit": false
+ },
+ "weight_kg": 1.9730431418176342,
+ "price_usd": 1719.9241658745213,
+ "release_year": 2019,
+ "updated_at": "0001-01-01T00:00:00Z"
+}

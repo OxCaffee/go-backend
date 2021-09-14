@@ -10,6 +10,7 @@
 * 5. [Go RPC](#GoRPC)
 * 6. [Go工程化](#Go-1)
 * 7. [Go面试题](#Go-1)
+* 8. [Redis](#Redis)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -57,3 +58,7 @@
 * [内存对齐](docs/Go语言内存对齐.md)
 * [通道chan](/docs/Go面试Channel.md)
 * [结构体struct](/docs/Go面试结构体.md)
+  
+##  8. <a name='Redis'></a>Redis
+
+* [Redis命令手册速记](/docs/Redis操作手册速查.md)

@@ -61,7 +61,7 @@
 
 ##  8. <a name='Redis'></a>Redis
 
-* [Redis命令手册速记](/docs/Redis操作手册速查.md)
+* [Redis命令手册速记](/docs/redis/Redis操作手册速查.md)
 * [Redis面试题汇总](/docs/redis/redis面试题汇总.md)
 
 ## Etcd

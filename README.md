@@ -22,7 +22,7 @@
 
 * [Go语言中的nil](/docs/Go语言中的nil.md)
 * [类型内嵌](/docs/Go语言中的类型内嵌.md)
-* [slice切片源码](docs/slice源码解读.md)
+* [slice切片](docs/slice源码解读.md)
 * [unsafe.Pointer非类型安全指针使用情景](/docs/unsafe.Pointer非安全类型指针.md)
 
 ##  2. <a name='Go-1'></a>Go内存管理
@@ -37,7 +37,7 @@
 * [通道Channel](/docs/Go语言通道Channel.md)
 
 ##  4. <a name='Go-1'></a>Go网络编程
-  
+
 * [net/http包源码解读——Request请求](/docs/http包之Request.md)
 * [net/http包源码解读——Response响应](/docs/http包之Response.md)
 * [net/http包源码阅读——ResponseWriter接口](/docs/http包之ResponseWriter.md)
@@ -58,7 +58,12 @@
 * [内存对齐](docs/Go语言内存对齐.md)
 * [通道chan](/docs/Go面试Channel.md)
 * [结构体struct](/docs/Go面试结构体.md)
-  
+
 ##  8. <a name='Redis'></a>Redis
 
 * [Redis命令手册速记](/docs/Redis操作手册速查.md)
+* [Redis面试题汇总](/docs/redis/redis面试题汇总.md)
+
+## Etcd
+
+* [分布式一致性协议](/docs/etcd/分布式一致性协议.md)

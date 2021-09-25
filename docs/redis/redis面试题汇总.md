@@ -1,3 +1,5 @@
+# Redis面试题汇总
+
 <!-- vscode-markdown-toc -->
 * 1. [Redis是单线程还是多线程?](#Redis)
 	* 1.1. [为什么Redis再4.0之前即使使用了单线程，但是仍然那么快？](#Redis4.0)
@@ -21,7 +23,7 @@
 	numbering=true
 	autoSave=true
 	/vscode-markdown-toc-config -->
-<!-- /vscode-markdown-toc --># Redis面试题汇总
+<!-- /vscode-markdown-toc -->
 
 ##  1. <a name='Redis'></a>Redis是单线程还是多线程?
 

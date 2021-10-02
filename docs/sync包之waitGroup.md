@@ -46,7 +46,7 @@ type WaitGroup struct {
 
 在做 64 位的原子操作的时候必须要保证 64 位（8 字节）对齐，如果没有对齐的就会有问题，但是 32 位的编译器并不能保证 64 位对齐所以这里用一个 12 字节的 `state1`字段来存储这两个状态，然后根据是否 8 字节对齐选择不同的保存方式。
 
-<div align=center><img src="/assets/wg1.png"/></div>
+<div align=center><img src="/assets/wg1.svg"/></div>
 
 这个操作巧妙在哪里呢？
 

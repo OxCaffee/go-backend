@@ -1,12 +1,29 @@
 # Go源码阅读——sync.waitGroup
 
-## 前言
+<!-- vscode-markdown-toc -->
+* 1. [前言](#)
+* 2. [waitGroup结构体定义](#waitGroup)
+	* 2.1. [为什么state设计成12字节的类型?](#state12)
+* 3. [#Add](#Add)
+* 4. [#Wait](#Wait)
+* 5. [#Done](#Done)
+* 6. [问题](#-1)
+	* 6.1. [waitGroup支持一个goroutine等待多个goroutine执行完成吗?](#waitGroupgoroutinegoroutine)
+	* 6.2. [waitGroup支持多个goroutine等待一个goroutine吗?](#waitGroupgoroutinegoroutine-1)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+##  1. <a name=''></a>前言
 
 `WaitGroup` 可以解决一个 goroutine 等待多个 goroutine 同时结束的场景，这个比较常见的场景就是例如 后端 worker 启动了多个消费者干活，还有爬虫并发爬取数据，多线程下载等等。
 
 那么在这里抛出一个问题：**支持多个goroutine等待一个goroutine吗？** 。这个问题先不回答，会放在下面的源码分析中解答。
 
-## waitGroup结构体定义
+##  2. <a name='waitGroup'></a>waitGroup结构体定义
 
 ```go
 type WaitGroup struct {
@@ -25,7 +42,7 @@ type WaitGroup struct {
 
 `state1` 的设计非常巧妙，这是一个是十二字节的数据，这里面主要包含两大块，counter 占用了 8 字节用于计数，sema 占用 4 字节用做信号量。
 
-### 为什么state设计成12字节的类型?
+###  2.1. <a name='state12'></a>为什么state设计成12字节的类型?
 
 在做 64 位的原子操作的时候必须要保证 64 位（8 字节）对齐，如果没有对齐的就会有问题，但是 32 位的编译器并不能保证 64 位对齐所以这里用一个 12 字节的 `state1`字段来存储这两个状态，然后根据是否 8 字节对齐选择不同的保存方式。
 
@@ -52,7 +69,7 @@ func (wg *WaitGroup) state() (statep *uint64, semap *uint32) {
 
 上面的代码会根据对齐类型来返回对应的`counter`和`sema` 。
 
-## #Add
+##  3. <a name='Add'></a>#Add
 
 ```go
 func (wg *WaitGroup) Add(delta int) {
@@ -96,7 +113,7 @@ func (wg *WaitGroup) Add(delta int) {
 }
 ```
 
-## #Wait
+##  4. <a name='Wait'></a>#Wait
 
 wait 主要就是等待其他的 goroutine 完事之后唤醒
 
@@ -129,7 +146,7 @@ func (wg *WaitGroup) Wait() {
 }
 ```
 
-## #Done
+##  5. <a name='Done'></a>#Done
 
 ```go
 func (wg *WaitGroup) Done() {
@@ -137,13 +154,13 @@ func (wg *WaitGroup) Done() {
 }
 ```
 
-## 问题
+##  6. <a name='-1'></a>问题
 
-### waitGroup支持一个goroutine等待多个goroutine执行完成吗?
+###  6.1. <a name='waitGroupgoroutinegoroutine'></a>waitGroup支持一个goroutine等待多个goroutine执行完成吗?
 
 支持。只需要一个goroutine执行`Wait`，其他负责`Done`即可。
 
-### waitGroup支持多个goroutine等待一个goroutine吗?
+###  6.2. <a name='waitGroupgoroutinegoroutine-1'></a>waitGroup支持多个goroutine等待一个goroutine吗?
 
 支持。当执行了`#Add`之后，会唤醒所有的等待goroutine。
 

@@ -32,11 +32,12 @@
 
 ##  3. <a name='Go-1'></a>Go并发编程
 
-* [并发同步原语和锁机制](docs/Go语言并发同步原语和锁.md)
-* [上下文Context](/docs/Go语言上下文Context.md)
-* [通道Channel](/docs/Go语言通道Channel.md)
-* [sync.mutex互斥锁源码解读](/docs/sync包之mutex.md)
-* [sync.map线程安全map源码解读](/docs/sync包之map.md)
+* [并发编程之深入理解同步原语和锁机制](docs/Go语言并发同步原语和锁.md)
+* [并发编程之深入理解context](/docs/Go语言上下文Context.md)
+* [并发编程之深入理解channel](/docs/Go语言通道Channel.md)
+* [并发编程之深入理解sync.mutex](/docs/sync包之mutex.md)
+* [并发编程之深入理解sync.map](/docs/sync包之map.md)
+* [并发编程之深入理解sync.waitGroup](docs/sync包之waitGroup.md)
 
 ##  4. <a name='Go-1'></a>Go网络编程
 

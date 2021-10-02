@@ -34,7 +34,7 @@
 
 * [并发编程之深入理解同步原语和锁机制](docs/Go语言并发同步原语和锁.md)
 * [并发编程之深入理解context.Context](/docs/Go语言上下文Context.md)
-* [并发编程之深入理解channel](/docs/Go语言通道Channel.md)
+* [并发编程之深入理解chan](/docs/Go语言通道Channel.md)
 * [并发编程之深入理解sync.Mutex](/docs/sync包之mutex.md)
 * [并发编程之深入理解sync.Map](/docs/sync包之map.md)
 * [并发编程之深入理解sync.WaitGroup](/docs/sync包之waitGroup.md)

@@ -1,38 +1,56 @@
 # 如何优雅地关闭channel
 
-## 关闭channel的难点
+<!-- vscode-markdown-toc -->
+* 1. [关闭channel的难点](#channel)
+* 2. [关闭channel的原则](#channel-1)
+* 3. [不优雅的关闭方法](#)
+	* 3.1. [defer-recover兜底](#defer-recover)
+	* 3.2. [使用sync.Once保证只关闭一次](#sync.Once)
+* 4. [优雅的关闭方法](#-1)
+	* 4.1. [一个sender，一个receiver](#senderreceiver)
+	* 4.2. [一个sender，M个receiver](#senderMreceiver)
+	* 4.3. [N个sender，一个receiver](#Nsenderreceiver)
+	* 4.4. [N个sender，M个receiver](#NsenderMreceiver)
+
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
+
+##  1. <a name='channel'></a>关闭channel的难点
 
 * 在不改变channel自身状态下，无法获知一个channel是否关闭
 * 关闭一个closed channel会导致panic。所以，如果关闭channel的一方在不知道channel是否关闭的情况下就去贸然关闭channel是很危险的事情
 * 向一个closed channel发送数据会导致panic。所以，如果向channel发送数据的一方不知道channel被关闭就去发送数据很危险
 
-## 关闭channel的原则
+##  2. <a name='channel-1'></a>关闭channel的原则
 
 **不要从一个 receiver 侧关闭 channel，也不要在有多个 sender 时，关闭 channel。**
 
-## 不优雅的关闭方法
+##  3. <a name=''></a>不优雅的关闭方法
 
-### defer-recover兜底
+###  3.1. <a name='defer-recover'></a>defer-recover兜底
 
 使用defer-recover机制，放心大胆关闭channel或者向channel发送数据。即使发生了panic，有defer-recover机制兜底
 
-### 使用sync.Once保证只关闭一次
+###  3.2. <a name='sync.Once'></a>使用sync.Once保证只关闭一次
 
 利用sync.Once特性保证只关闭channel一次。**这种方法保证了channel只被关闭一次，但是无法保证被关闭后没有sender发送数据**
 
-## 优雅的关闭方法
+##  4. <a name='-1'></a>优雅的关闭方法
 
 **增加一个关闭信号的channel，receiver通过信号channel下达关闭数据channel指令，sender接收到关闭信号之后，停止接收数据。**
 
-### 一个sender，一个receiver
+###  4.1. <a name='senderreceiver'></a>一个sender，一个receiver
 
 直接从sender端关闭即可
 
-### 一个sender，M个receiver
+###  4.2. <a name='senderMreceiver'></a>一个sender，M个receiver
 
 直接从sender端关闭即可
 
-### N个sender，一个receiver
+###  4.3. <a name='Nsenderreceiver'></a>N个sender，一个receiver
 
 在这种情况下，优雅地关闭channel的方法就是receiver负责通知sender不要再发送数据了，然后关闭它。
 
@@ -71,7 +89,7 @@ func main() {
 }
 ```
 
-### N个sender，M个receiver
+###  4.4. <a name='NsenderMreceiver'></a>N个sender，M个receiver
 
 这里有 M 个 receiver，如果直接还是采取第 3 种解决方案，由 receiver 直接关闭 stopCh 的话，就会重复关闭一个 channel，导致 panic。因此需要增加一个中间人，M 个 receiver 都向它发送关闭 dataCh 的“请求”，中间人收到第一个请求后，就会直接下达关闭dataCh 的指令（通过关闭 stopCh，这时就不会发生重复关闭的情况，因为 stopCh 的发送方只有 中间人一个）。另外，这里的 N 个 sender 也可以向中间人发送关闭 dataCh 的请求。
 

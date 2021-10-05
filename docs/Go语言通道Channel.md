@@ -13,6 +13,12 @@
 	* 4.2. [接收数据总结](#-1)
 * 5. [关闭chan](#chan-1)
 	* 5.1. [关闭chan总结](#chan-1)
+* 6. [案例说明(好案例)](#-1)
+* 7. [问题](#-1)
+	* 7.1. [如果channel为nil，从这个channel中接收数据会怎么样？](#channelnilchannel)
+* 8. [关闭一个为nil的channel会怎么样?](#nilchannel)
+* 9. [channel什么情况下会引起资源的泄露?](#channel)
+	* 9.1. [channel何时被GC收集?](#channelGC)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -562,7 +568,7 @@ func closechan(c *hchan) {
 - 关闭一个 nil 的 channel 和已关闭了的 channel 都会导致 panic
 - 关闭 channel 后会释放所有因为 channel 而阻塞的 Goroutine
 
-## 案例说明(好案例)
+##  6. <a name='-1'></a>案例说明(好案例)
 
 ```go
 func gA(a <-chan int) {
@@ -588,21 +594,21 @@ func main() {
 
 首先创建了一个无缓冲的 channel，接着启动两个 goroutine，并将前面创建的 channel 传递进 去。然后，向这个 channel 中发送数据 3，最后 sleep 1 秒后程序退出。
 
-## 问题
+##  7. <a name='-1'></a>问题
 
-### 如果channel为nil，从这个channel中接收数据会怎么样？
+###  7.1. <a name='channelnilchannel'></a>如果channel为nil，从这个channel中接收数据会怎么样？
 
 * 在非阻塞模式下，会直接返回
 * 在阻塞模式下，会调用`gopark`挂起goroutine，并且会一直阻塞下去
 
-## 关闭一个为nil的channel会怎么样?
+##  8. <a name='nilchannel'></a>关闭一个为nil的channel会怎么样?
 
 关闭一个nil的channel或者一个已经关闭的channel都会导致panic
 
-## channel什么情况下会引起资源的泄露?
+##  9. <a name='channel'></a>channel什么情况下会引起资源的泄露?
 
 channel资源泄露的原因是goroutine操作channel之后，处于发送或者接收阻塞状态，而channel处于满或者空的状态，一直得不到改变。他同时，垃圾回收器也不会回收这部分的资源，就会导致goroutine一直处于等待的状态。
 
-### channel何时被GC收集?
+###  9.1. <a name='channelGC'></a>channel何时被GC收集?
 
 如果一个channel没有任何goroutine引用，GC就会对其进行回收操作。

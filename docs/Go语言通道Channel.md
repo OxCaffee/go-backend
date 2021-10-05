@@ -311,10 +311,13 @@ func send(c *hchan, sg *sudog, ep unsafe.Pointer, unlockf func(), skip int) {
 func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool) {
 	// 和发送数据类似，先判断是否为nil，如果是 nil 并且阻塞接收就会 panic
 	if c == nil {
+        // 如果不阻塞，直接返回
 		if !block {
 			return
 		}
+        // 如果是阻塞模式，接收一个nil的chan会导致挂起
 		gopark(nil, nil, waitReasonChanReceiveNilChan, traceEvGoStop, 2)
+        // 不会执行到这里
 		throw("unreachable")
 	}
 
@@ -339,7 +342,7 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 	// 上锁
 	lock(&c.lock)
 
-    // 和上面类似，如果通道已经关闭了，并且已经没数据了，我们清理到 ep 指针中的数据并且返回
+    // 如果通道已经关闭了，并且已经没数据了，我们清理到 ep 指针中的数据并且返回
 	if c.closed != 0 && c.qcount == 0 {
 		unlock(&c.lock)
 		if ep != nil {
@@ -348,34 +351,43 @@ func chanrecv(c *hchan, ep unsafe.Pointer, block bool) (selected, received bool)
 		return true, false
 	}
 
-    // 和发送类似，接收数据时也是先看一下有没有正在阻塞的等待发送数据的 Goroutine
-    // 如果有的话 直接调用 recv 方法从发送者或者是缓冲区中接收数据，recv 方法后面会讲到
+    // 等待发送队列中goroutine的存在
+    // 如果goroutine存在，说明存在下面两种情况:
+    // 1. 是非缓冲型的channel
+    // 2. 是缓冲型的channel，但是缓冲区已经满了
+    // 针对1类型：直接进行内存的拷贝，即从sender goroutine -> receiver goroutine
+    // 针对2类型，接收到循环数组头部的数据，并将发送者的元素放置到循环数组尾部
 	if sg := c.sendq.dequeue(); sg != nil {
 		recv(c, sg, ep, func() { unlock(&c.lock) }, 3)
 		return true, true
 	}
 
-    // 如果 channel 的缓冲区还有数据
+    // qcount>0，说明缓冲区还有数据
 	if c.qcount > 0 {
-		// 获取当前 channel 接收的地址
+		// 直接从循环数组中找到要接收到数据
 		qp := chanbuf(c, c.recvx)
 
-        // 如果传入的指针不是 nil 直接把数据复制到对应的变量上
+        // ep不是nil，说明程序代码中的接收格式为： val <-ch 而不是 <-ch
+        // 说明此时有接收对象，将chan中的数据值拷贝到ep指针对应的地方
 		if ep != nil {
 			typedmemmove(c.elemtype, ep, qp)
 		}
-        // 清除队列中的数据，设置接受者索引并且返回
+        // 如果ep为nil，说明没有接收对象，那么直接将chan中的数据抹除即可
 		typedmemclr(c.elemtype, qp)
+        // 接收游标向前移动
 		c.recvx++
+        // 接收游标达到边界值，那么清除游标的值
 		if c.recvx == c.dataqsiz {
 			c.recvx = 0
 		}
+        // 数据被接收了，少了1个
 		c.qcount--
+        // 解锁
 		unlock(&c.lock)
 		return true, true
 	}
 
-    // 和发送一样剩下的就是阻塞操作了，如果是非阻塞的情况，直接返回
+    // 如果是非阻塞的情况，此时没有缓冲区，也就没有数据
 	if !block {
 		unlock(&c.lock)
 		return false, false
@@ -549,3 +561,48 @@ func closechan(c *hchan) {
 
 - 关闭一个 nil 的 channel 和已关闭了的 channel 都会导致 panic
 - 关闭 channel 后会释放所有因为 channel 而阻塞的 Goroutine
+
+## 案例说明(好案例)
+
+```go
+func gA(a <-chan int) {
+    val := <-a
+    fmt.Println("g1 received data:", val)
+    return
+}
+
+func gB(b <-chan int) {
+    val := <-b
+    fmt.Println("g2 received data:", val)
+    return
+}
+
+func main() {
+    ch := make(chan int)
+    go gA(ch)
+    go gB(ch)
+    ch <- 3
+    time.Sleep(time.Second)
+}
+```
+
+首先创建了一个无缓冲的 channel，接着启动两个 goroutine，并将前面创建的 channel 传递进 去。然后，向这个 channel 中发送数据 3，最后 sleep 1 秒后程序退出。
+
+## 问题
+
+### 如果channel为nil，从这个channel中接收数据会怎么样？
+
+* 在非阻塞模式下，会直接返回
+* 在阻塞模式下，会调用`gopark`挂起goroutine，并且会一直阻塞下去
+
+## 关闭一个为nil的channel会怎么样?
+
+关闭一个nil的channel或者一个已经关闭的channel都会导致panic
+
+## channel什么情况下会引起资源的泄露?
+
+channel资源泄露的原因是goroutine操作channel之后，处于发送或者接收阻塞状态，而channel处于满或者空的状态，一直得不到改变。他同时，垃圾回收器也不会回收这部分的资源，就会导致goroutine一直处于等待的状态。
+
+### channel何时被GC收集?
+
+如果一个channel没有任何goroutine引用，GC就会对其进行回收操作。

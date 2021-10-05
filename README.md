@@ -29,6 +29,7 @@
 ##  2. <a name='Go-1'></a>Go进阶
 
 * [unsafe.Pointer非类型安全指针使用情景](/docs/unsafe.Pointer非安全类型指针.md)
+* [如何优雅关闭channel](/docs/golang/如何优雅地关闭channel.md)
 
 ##  3. <a name='Go-1'></a>Go内存管理
 
@@ -64,9 +65,10 @@
 
 ##  8. <a name='Go-1'></a>Go面试题
 
-* [内存对齐](docs/Go语言内存对齐.md)
-* [通道chan](/docs/Go面试Channel.md)
-* [结构体struct](/docs/Go面试结构体.md)
+* [golang面试之内存对齐](docs/Go语言内存对齐.md)
+* [golang面试之通道channel](/docs/Go面试Channel.md)
+* [golang面试之结构体struct](/docs/Go面试结构体.md)
+* [golang面试之字典map](/docs/golang/golang面试之map.md)
 
 ##  9. <a name='Redis'></a>DB
 

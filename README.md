@@ -11,7 +11,7 @@
 * 6. [Go RPC](#GoRPC)
 * 7. [Go工程化](#Go-1)
 * 8. [Go面试题](#Go-1)
-* 9. [Redis](#Redis)
+* 9. [DB](#DB)
 * 10. [分布式](#)
 
 <!-- vscode-markdown-toc-config
@@ -70,7 +70,7 @@
 * [golang面试之结构体struct](/docs/Go面试结构体.md)
 * [golang面试之字典map](/docs/golang/golang面试之map.md)
 
-##  9. <a name='Redis'></a>DB
+##  9. <a name='DB'></a>DB
 
 * **Redis**
   * [Redis命令手册速记](/docs/redis/Redis操作手册速查.md)

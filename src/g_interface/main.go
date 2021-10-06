@@ -2,26 +2,31 @@ package main
 
 import "fmt"
 
-type Cat struct{}
-type Duck interface {
+type Animal interface {
 	Walk()
-	Yaya()
 }
 
-func (c Cat) Walk() {
-	fmt.Println("this is cat walking")
+type Dog struct {
+	name string
 }
 
-func (c Cat) Yaya() {
-	fmt.Println("this is cat yaya")
+func (d *Dog) Walk() {
+	fmt.Println("a dog is walking")
 }
 
-func ImplementInterfaceMethod() {
-	var duck Duck = &Cat{}
-	// fmt.Println(duck.Walk())
-	duck.Walk()
+func InterfaceNil() {
+	var animal Animal
+	fmt.Println(animal == nil)
+	fmt.Printf("%T %v\n", animal, animal)
+
+	var dog *Dog
+	fmt.Println(dog == nil)
+
+	animal = dog
+	fmt.Println(animal == nil)
+	fmt.Printf("%T %v\n", animal, animal)
 }
 
 func main() {
-	ImplementInterfaceMethod()
+	InterfaceNil()
 }

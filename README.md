@@ -22,7 +22,7 @@
 ##  1. <a name='Go'></a>Go基础
 
 * [Golang中的nil](/docs/Go语言中的nil.md)
-* [类型内嵌](/docs/Go语言中的类型内嵌.md)
+* [Golang中的类型内嵌](/docs/Go语言中的类型内嵌.md)
 * [Golang基本数据结构之切片slice](docs/slice源码解读.md)
 * [unsafe.Pointer非类型安全指针使用情景](/docs/unsafe.Pointer非安全类型指针.md)
 * [如何优雅关闭channel](/docs/golang/如何优雅地关闭channel.md)

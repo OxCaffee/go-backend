@@ -33,6 +33,7 @@
 
 * [happens-before原则](/docs/Go语言HappensBefore原则.md)
 * [垃圾收集器GC](/docs/Go语言垃圾收集器.md)
+* [Golang内存管理(水平有限，只能整理基本的)](/docs/golang/golang内存管理.md)
 
 ##  3. <a name='Go-1'></a>Go并发编程
 

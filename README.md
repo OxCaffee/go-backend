@@ -31,9 +31,12 @@
 
 ##  2. <a name='Go-1'></a>Go内存管理
 
-* [happens-before原则](/docs/Go语言HappensBefore原则.md)
-* [垃圾收集器GC](/docs/Go语言垃圾收集器.md)
-* [Golang内存管理(水平有限，只能整理基本的)](/docs/golang/golang内存管理.md)
+* **GC垃圾收集**
+  * [happens-before原则](/docs/Go语言HappensBefore原则.md)
+  * [初步认识垃圾收集](/docs/Go语言垃圾收集器.md)
+  * [On-The-Fly算法](https://lamport.azurewebsites.net/pubs/garbage.pdf)
+  * [不使用STW进行垃圾收集复制](https://people.cs.umass.edu/~moss/papers/oopsla-2003-mark-copy.pdf)
+  * [Golang内存管理(水平有限，只能整理基本的)](/docs/golang/golang内存管理.md)
 
 ##  3. <a name='Go-1'></a>Go并发编程
 

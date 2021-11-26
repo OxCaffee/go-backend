@@ -7,6 +7,8 @@
 	* 1.3. [Mark Termination](#MarkTermination)
 	* 1.4. [Sweep Phase](#SweepPhase)
 * 2. [并发清扫(Concurrent Sweep)](#ConcurrentSweep)
+* 3. [GC Rate](#GCRate)
+* 4. [Oblets分割](#Oblets)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -65,3 +67,10 @@ Start the world. From this point on, newly allocated objects are white, and allo
 
 **在一种情况下这可能还不够：如果一个 goroutine 将两个不相邻的单页跨度清除并释放到堆中，它将分配一个新的两页跨度，但仍然可以有其他一页未扫描跨度，这种情况下仍然可以被合并成一个两页的span。**
 
+##  3. <a name='GCRate'></a>GC Rate
+
+`Next GC`发生在分配了与已使用内存成正比的额外内存之后。这个比例由`GOGC`环境变量控制，例如`GOGC=100`，当使用了4M内存，那么下一次GC的内存将会是8M，这个比例是线性的。
+
+##  4. <a name='Oblets'></a>Oblets分割
+
+为了避免扫描大对象造成的gc停顿，GC会将超过`maxObletsBytes`的大对象分割为`maxObletsBytes`大小的对象。分割后的对象会被当成新的对象处理后面的GC。

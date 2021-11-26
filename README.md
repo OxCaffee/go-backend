@@ -36,7 +36,8 @@
   * [初步认识垃圾收集](/docs/Go语言垃圾收集器.md)
   * [On-The-Fly算法](https://lamport.azurewebsites.net/pubs/garbage.pdf)
   * [不使用STW进行垃圾收集复制](https://people.cs.umass.edu/~moss/papers/oopsla-2003-mark-copy.pdf)
-  * [runtime包源码解读——mgc(1)](/docs/golang/runtime包解读之mgc.md)
+  * [runtime包源码解读——mgc(1)(待完成)](/docs/golang/runtime包解读之mgc.md)
+  * [runtime包源码解读——mbarrier(待完成)]()
 
 ##  3. <a name='Go-1'></a>Go并发编程
 

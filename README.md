@@ -42,6 +42,7 @@
 
 ##  3. <a name='Go-1'></a>Go调度器
 
+* [runtime包源码解读——golang程序的启动流程](/docs/golang/runtime包解读之golang程序启动流程.md)
 * [runtime包源码解读——proc调度器模型](/docs/golang/runtime包解读之proc.md)
 
 ##  4. <a name='Go-1'></a>Go并发编程

@@ -231,7 +231,7 @@ func gostartcall(buf *gobuf, fn, ctxt unsafe.Pointer) {
 }
 ```
 
-**调度信息的 `sp` 中存储了 `runtime.goexit` 函数的程序计数器，而 `pc` 中存储了传入函数的程序计数器。因为 `pc` 寄存器的作用就是存储程序接下来运行的位置，所以 `pc` 的使用比较好理解，但是 `sp` 中存储的 `runtime.goexit`会让人感到困惑，我们需要配合下面的调度循环来理解它的作用。**
+**调度信息的 `sp` 中存储了 `runtime.goexit` 函数的程序计数器，而 `pc` 中存储了传入函数的程序计数器。因为 `pc` 寄存器的作用就是存储程序接下来运行的位置，所以 `pc` 的使用比较好理解。**
 
 `buf`的作用就是一个**搬运工** 。当调度器调度到此goroutine时候，就取出`buf.sp`和`buf.pc`，恢复CPU的寄存器，重新构造goroutine的运行环境。
 

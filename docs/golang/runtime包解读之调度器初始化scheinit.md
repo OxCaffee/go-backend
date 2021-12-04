@@ -122,11 +122,36 @@ _虚拟内存的源码阅读需要先对Golang内存模型有个大概了解，�
 ###  2.5. <a name='-1'></a>设置最大逻辑处理器数
 
 ```go
-procs := ncpu
+func schedinit() {
+	_g_ := getg()
+	...
+
+	sched.maxmcount = 10000
+
+	...
+	sched.lastpoll = uint64(nanotime())
+	procs := ncpu
 	if n, ok := atoi32(gogetenv("GOMAXPROCS")); ok && n > 0 {
 		procs = n
 	}
+	if procresize(procs) != nil {
+		throw("unknown runnable goroutine during bootstrap")
+	}
+}
 ```
+
+在调度器初始函数执行的过程中会将 `maxmcount` 设置成 10000，这也就是一个 Go 语言程序能够创建的最大线程数，虽然最多可以创建 10000 个线程，但是可以同时运行的线程还是由 `GOMAXPROCS` 变量控制。
+
+我们从环境变量 `GOMAXPROCS` 获取了程序能够同时运行的最大处理器数之后就会调用 `runtime.procresize`更新程序中处理器的数量，在这时整个程序不会执行任何用户 Goroutine，调度器也会进入锁定状态，`runtime.procresize`的执行过程如下：
+
+1. 如果全局变量 `allp` 切片中的处理器数量少于期望数量，会对切片进行扩容；
+2. 使用 `new` 创建新的处理器结构体并调用 `runtime.p.init`初始化刚刚扩容的处理器；
+3. 通过指针将线程 m0 和处理器 `allp[0]` 绑定到一起；
+4. 调用 `runtime.p.destroy`释放不再使用的处理器结构；
+5. 通过截断改变全局变量 `allp` 的长度保证与期望处理器数量相等；
+6. 将除 `allp[0]` 之外的处理器 P 全部设置成 `_Pidle` 并加入到全局的空闲队列中；
+
+调用 `runtime.procresize`是调度器启动的最后一步，在这一步过后调度器会完成相应数量处理器的启动，等待用户创建运行新的 Goroutine 并为 Goroutine 调度处理器资源。
 
 ###  2.6. <a name='GCgcinit'></a>垃圾收集GC初始化gcinit
 

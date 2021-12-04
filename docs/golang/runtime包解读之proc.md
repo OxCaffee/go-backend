@@ -59,42 +59,6 @@ golang目前只会在下面情况去挂起一个M: **存在空闲idle的P，并�
 | `_Gpreempted` | 由于抢占而被阻塞，没有执行用户代码并且不在运行队列上，等待唤醒 |
 | `_Gscan`      | GC 正在扫描栈空间，没有执行代码，可以与其他状态同时存在      |
 
-##  3. <a name='-1'></a>启动调度器
-
-调度器的启动过程是我们平时比较难以接触的过程，不过作为程序启动前的准备工作，理解调度器的启动过程对我们理解调度器的实现原理很有帮助，运行时通过 `runtime.schedinit()` 初始化调度器：
-
-```go
-func schedinit() {
-	_g_ := getg()
-	...
-
-	sched.maxmcount = 10000
-
-	...
-	sched.lastpoll = uint64(nanotime())
-	procs := ncpu
-	if n, ok := atoi32(gogetenv("GOMAXPROCS")); ok && n > 0 {
-		procs = n
-	}
-	if procresize(procs) != nil {
-		throw("unknown runnable goroutine during bootstrap")
-	}
-}
-```
-
-在调度器初始函数执行的过程中会将 `maxmcount` 设置成 10000，这也就是一个 Go 语言程序能够创建的最大线程数，虽然最多可以创建 10000 个线程，但是可以同时运行的线程还是由 `GOMAXPROCS` 变量控制。
-
-我们从环境变量 `GOMAXPROCS` 获取了程序能够同时运行的最大处理器数之后就会调用 `runtime.procresize`更新程序中处理器的数量，在这时整个程序不会执行任何用户 Goroutine，调度器也会进入锁定状态，`runtime.procresize`的执行过程如下：
-
-1. 如果全局变量 `allp` 切片中的处理器数量少于期望数量，会对切片进行扩容；
-2. 使用 `new` 创建新的处理器结构体并调用 `runtime.p.init`初始化刚刚扩容的处理器；
-3. 通过指针将线程 m0 和处理器 `allp[0]` 绑定到一起；
-4. 调用 `runtime.p.destroy`释放不再使用的处理器结构；
-5. 通过截断改变全局变量 `allp` 的长度保证与期望处理器数量相等；
-6. 将除 `allp[0]` 之外的处理器 P 全部设置成 `_Pidle` 并加入到全局的空闲队列中；
-
-调用 `runtime.procresize`是调度器启动的最后一步，在这一步过后调度器会完成相应数量处理器的启动，等待用户创建运行新的 Goroutine 并为 Goroutine 调度处理器资源。
-
 ###  3.1. <a name='Goroutine-1'></a>创建Goroutine
 
 创建一个goroutine通过Go 语言的 `go` 关键字，编译器会通过 [`cmd/compile/internal/gc.state.stmt`](https://draveness.me/golang/tree/cmd/compile/internal/gc.state.stmt) 和 [`cmd/compile/internal/gc.state.call`](https://draveness.me/golang/tree/cmd/compile/internal/gc.state.call) 两个方法将该关键字转换成 [`runtime.newproc`](https://draveness.me/golang/tree/runtime.newproc) 函数调用。

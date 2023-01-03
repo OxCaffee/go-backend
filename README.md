@@ -6,7 +6,6 @@
 
 * [空类型nil](/docs/Go语言中的nil.md)
 * [类型内嵌](/docs/Go语言中的类型内嵌.md)
-
 * [内存对齐](docs/Go语言内存对齐.md)
 * [通道channel](/docs/Go面试Channel.md)
 * [结构体struct](/docs/Go面试结构体.md)

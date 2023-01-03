@@ -9,10 +9,9 @@
 * 4. [Go并发编程](#Go-1)
 * 5. [Go网络编程](#Go-1)
 * 6. [Go RPC](#GoRPC)
-* 7. [Go工程化](#Go-1)
-* 8. [Go面试题](#Go-1)
-* 9. [DB](#DB)
-* 10. [分布式](#)
+* 7. [Go面试题](#Go-1)
+* 8. [DB](#DB)
+* 9. [分布式](#)
 
 <!-- vscode-markdown-toc-config
 	numbering=true
@@ -65,16 +64,12 @@
 * [net/http包源码解读——Server服务器](/docs/http包之Server.md)
 * [net/http包源码解读——Client客户端](/docs/http包之Client.md)
 
-##  6. <a name='GoRPC'></a>Go RPC
+##  6. <a name='GoRPC'></a>RPC
 
 * [grpc之Interceptor拦截器](/docs/grpc之拦截器.md)
 * [grpc之Server启动流程](/docs/grpc之Server启动.md)
 
-##  7. <a name='Go-1'></a>Go工程化
-
-* [Go-Modules官方文档解读](docs/Go-Modules官方文档解读.md)
-
-##  8. <a name='Go-1'></a>Go面试题
+##  7. <a name='Go-1'></a>Go面试题
 
 * [golang面试之内存对齐](docs/Go语言内存对齐.md)
 * [golang面试之通道channel](/docs/Go面试Channel.md)
@@ -90,3 +85,4 @@
 ##  10. <a name=''></a>分布式
 
 * [分布式一致性协议](/docs/etcd/分布式一致性协议.md)
+* [分布式事务](/docs/分布式事务.md)
